@@ -59,7 +59,7 @@ export async function POST(request) {
         Authorization: `Bearer ${process.env.SARVAM_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'sarvam-m',
+        model: 'sarvam-105b',
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
           ...recentMessages,

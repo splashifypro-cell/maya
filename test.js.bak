@@ -1,7 +1,7 @@
 import { SYSTEM_PROMPT } from './lib/systemPrompt.js';
 
 const payload = {
-  "model": "sarvam-m",
+  "model": "sarvam-105b",
   "messages": [
     {
       "role": "system",
