@@ -4,29 +4,22 @@
   <img src="https://www.sarvam.ai/sarvam-logo.png" alt="Sarvam AI Logo" width="200" />
 </p>
 
-A premium, full-stack document intelligence and image reader feature integrated into the **Splashify Pro** platform, powered by the **Sarvam AI Document Intelligence API**.
+A premium, full-stack AI chat assistant integrated into the **Splashify Pro** platform, powered by **Sarvam AI**.
 
 ## 🚀 Overview
 
-Maya is an AI-powered assistant designed to streamline document processing. It leverages Sarvam's state-of-the-art OCR and document understanding capabilities to extract text from various file formats with high accuracy, providing a seamless user experience within a modern chat interface.
+Maya is an AI-powered assistant designed to provide seamless customer interactions. It leverages Sarvam's state-of-the-art conversational AI to handle inquiries about pricing, onboarding, and support within a modern chat interface.
 
 ## ✨ Key Features
 
-- **Multi-format Support**: Process PNG, JPG, PDF, and TIFF files effortlessly (up to 10MB).
-- **Sarvam Document Intelligence**: Implements the full 5-step secure workflow:
-  1. **Initialise**: Job creation with `en-IN` language support.
-  2. **Get Upload Link**: Secure presigned URLs for direct uploads.
-  3. **Upload**: Real-time progress tracking for file uploads.
-  4. **Start Job**: Automated processing trigger.
-  5. **Status & Export**: Real-time polling and markdown export.
+- **Sarvam AI Conversational Interface**: High-fidelity AI responses across multiple languages.
 - **Modern UI/UX**:
-  - **Shadcn UI**: Built with Radix-powered components (Avatar, Progress, ScrollArea, Card).
-  - **Drag-and-Drop**: Intuitive file uploading directly into the chat.
-  - **Real-time Progress**: Visual feedback during every stage of document processing.
+  - **Shadcn UI**: Built with Radix-powered components (Avatar, ScrollArea, Card).
+  - **Real-time Status**: Visual feedback for AI thinking and online status.
 - **Enterprise Ready**:
   - **Rate Limiting**: Backend protection (10 requests/minute per IP).
   - **Secure API Proxy**: Environment-variable based key management.
-  - **High Accuracy**: Verified logic for ≥ 95% OCR accuracy.
+  - **Chat Persistence**: MongoDB integration for session management.
 
 ## 🛠️ Tech Stack
 

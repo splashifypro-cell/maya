@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Send, Paperclip, X, Minus, MessageCircle, Bot, User } from 'lucide-react';
+import { Send, X, Minus, MessageCircle, Bot, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -34,14 +34,10 @@ export default function MayaWidget() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [statusMessage, setStatusMessage] = useState('');
   const [showTooltip, setShowTooltip] = useState(false);
   
   const scrollAreaRef = useRef(null);
   const inputRef = useRef(null);
-  const fileInputRef = useRef(null);
   const abortRef = useRef(null);
   const sessionId = useRef('');
 
@@ -56,124 +52,7 @@ export default function MayaWidget() {
         scrollContainer.scrollTop = scrollContainer.scrollHeight;
       }
     }
-  }, [messages, loading, uploading]);
-
-  useEffect(() => {
-    const showTimer = setTimeout(() => setShowTooltip(true), 1500);
-    const hideTimer = setTimeout(() => setShowTooltip(false), 6500);
-    return () => { clearTimeout(showTimer); clearTimeout(hideTimer); };
-  }, []);
-
-  const handleFileUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const allowedTypes = ['image/png', 'image/jpeg', 'application/pdf', 'image/tiff'];
-    if (!allowedTypes.includes(file.type)) {
-      alert('Only PNG, JPG, PDF, and TIFF are supported.');
-      return;
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      alert('File size must be under 10MB.');
-      return;
-    }
-
-    setUploading(true);
-    setUploadProgress(0);
-    setStatusMessage('Initialising job...');
-    setMessages(prev => [...prev, { role: 'user', content: `📎 Uploading file: ${file.name}`, id: Date.now() }]);
-
-    try {
-      const initRes = await fetch('/api/sarvam/initialise', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ language: 'en-IN', output_format: 'md' }),
-      });
-      const initData = await initRes.json();
-      if (!initRes.ok) throw new Error(initData.details || initData.error || 'Failed to initialise job');
-      const { job_id } = initData;
-
-      setStatusMessage('Getting upload link...');
-      const uploadLinkRes = await fetch('/api/sarvam/get-upload-links', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ job_id, filename: file.name }),
-      });
-      const uploadLinkData = await uploadLinkRes.json();
-      if (!uploadLinkRes.ok) throw new Error(uploadLinkData.details || uploadLinkData.error || 'Failed to get upload link');
-      
-      const uploadUrl = uploadLinkData.upload_urls?.[file.name]?.url;
-      if (!uploadUrl) throw new Error('Failed to get upload link');
-
-      setStatusMessage('Uploading file...');
-      const xhr = new XMLHttpRequest();
-      xhr.open('PUT', uploadUrl, true);
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percent = Math.round((event.loaded / event.total) * 100);
-          setUploadProgress(percent);
-        }
-      };
-
-      const uploadPromise = new Promise((resolve, reject) => {
-        xhr.onload = () => (xhr.status === 200 || xhr.status === 201) ? resolve() : reject(new Error('Upload failed'));
-        xhr.onerror = () => reject(new Error('Upload error'));
-      });
-      xhr.send(file);
-      await uploadPromise;
-
-      setStatusMessage('Starting processing...');
-      const startRes = await fetch('/api/sarvam/start', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ job_id }),
-      });
-      if (!startRes.ok) {
-        const startData = await startRes.json();
-        throw new Error(startData.details || startData.error || 'Failed to start job');
-      }
-
-      setStatusMessage('Processing document...');
-      let statusData;
-      let attempts = 0;
-      const maxAttempts = 60; 
-      while (attempts < maxAttempts) {
-        const statusRes = await fetch(`/api/sarvam/status?job_id=${job_id}`);
-        statusData = await statusRes.json();
-        if (statusData.job_state === 'Completed' || statusData.job_state === 'PartiallyCompleted') break;
-        if (statusData.job_state === 'Failed') throw new Error('Processing failed');
-        attempts++;
-        await new Promise(r => setTimeout(r, 2000));
-      }
-
-      if (attempts === maxAttempts) throw new Error('Processing timeout');
-
-      setStatusMessage('Downloading result...');
-      const downloadRes = await fetch(`/api/sarvam/download-links?job_id=${job_id}`);
-      const downloadData = await downloadRes.json();
-      if (!downloadRes.ok) throw new Error(downloadData.details || downloadData.error || 'Failed to get download links');
-      
-      const firstFile = Object.keys(downloadData.download_urls)[0];
-      const downloadUrl = downloadData.download_urls[firstFile]?.url;
-
-      if (!downloadUrl) throw new Error('Failed to get download link');
-
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: `✅ Document processing complete! You can download the extracted text here: [Download Results](${downloadUrl})\n\n*(Powered by Sarvam)*`,
-        id: Date.now()
-      }]);
-
-    } catch (err) {
-      console.error(err);
-      setMessages(prev => [...prev, { role: 'assistant', content: `⚠️ Error processing document: ${err.message}`, id: Date.now() }]);
-    } finally {
-      setUploading(false);
-      setStatusMessage('');
-      setUploadProgress(0);
-      if (fileInputRef.current) fileInputRef.current.value = '';
-    }
-  };
+  }, [messages, loading]);
 
   const openWidget = useCallback(() => {
     setOpen(true);
@@ -194,6 +73,9 @@ export default function MayaWidget() {
     if (!text || loading) return;
     setMessages(prev => [...prev, { role: 'user', content: text, id: Date.now() }]);
     setInput('');
+    if (inputRef.current) {
+      inputRef.current.style.height = '36px';
+    }
     setLoading(true);
     abortRef.current = new AbortController();
     try {
@@ -273,8 +155,8 @@ export default function MayaWidget() {
             </div>
           </CardHeader>
 
-          <CardContent className="flex-1 p-0 bg-slate-50/50">
-            <ScrollArea ref={scrollAreaRef} className="h-full p-4">
+          <CardContent className="flex-1 p-0 bg-slate-50/50 min-h-0 relative">
+            <ScrollArea ref={scrollAreaRef} className="h-full w-full p-4">
               <div className="flex flex-col gap-4">
                 {messages.map((msg) => (
                   <div key={msg.id} className={cn("flex gap-2 max-w-[85%]", msg.role === 'user' ? "ml-auto flex-row-reverse" : "mr-auto")}>
@@ -312,47 +194,12 @@ export default function MayaWidget() {
                     </div>
                   </div>
                 )}
-
-                {uploading && (
-                  <div className="flex gap-2 max-w-[85%] mr-auto">
-                    <Avatar className="h-8 w-8 mt-1 shrink-0">
-                      <AvatarImage src="/maya-avatar.png" alt="Maya" />
-                      <AvatarFallback className="bg-primary text-primary-foreground"><Bot className="h-4 w-4" /></AvatarFallback>
-                    </Avatar>
-                    <Card className="w-full max-w-[240px] p-3 border shadow-sm">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-semibold text-primary uppercase">{statusMessage}</span>
-                        <span className="text-[10px] font-bold text-muted-foreground">{uploadProgress}%</span>
-                      </div>
-                      <Progress value={uploadProgress} className="h-1.5" />
-                    </Card>
-                  </div>
-                )}
               </div>
             </ScrollArea>
           </CardContent>
 
           <CardFooter className="p-3 bg-white border-t flex flex-col gap-2">
-            <div 
-              className="w-full flex items-end gap-2 group"
-              onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
-              onDrop={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const files = e.dataTransfer.files;
-                if (files && files.length > 0) handleFileUpload({ target: { files } });
-              }}
-            >
-              <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileUpload} accept=".png,.jpg,.jpeg,.pdf,.tiff" />
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-9 w-9 shrink-0 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading || loading}
-              >
-                <Paperclip className="h-4 w-4" />
-              </Button>
+            <div className="w-full flex items-end gap-2 group">
               <textarea
                 ref={inputRef}
                 value={input}
@@ -368,7 +215,7 @@ export default function MayaWidget() {
               />
               <Button 
                 onClick={sendMessage} 
-                disabled={loading || uploading || !input.trim()} 
+                disabled={loading || !input.trim()} 
                 size="icon" 
                 className="h-9 w-9 shrink-0 rounded-full shadow-md"
               >
