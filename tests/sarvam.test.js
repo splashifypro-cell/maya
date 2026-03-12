@@ -2,8 +2,6 @@
 import { isRateLimited } from '../lib/rate-limiter';
 
 describe('Rate Limiter', () => {
-  const ip = '127.0.0.1';
-
   beforeEach(() => {
     // Clear the map if we had a way, but since it's a module, let's just use a new IP for each test
   });
