@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowUp, X, Minus, MessageCircle, Bot, User } from 'lucide-react';
+import { ArrowUp, X, Minus, MessageSquare, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -107,7 +107,7 @@ export default function MayaWidget() {
         >
           <Avatar className="h-8 w-8 border-2 border-primary/20">
             <AvatarImage src="/maya-avatar.png" alt="Maya" />
-            <AvatarFallback className="bg-primary text-primary-foreground"><Bot className="h-4 w-4" /></AvatarFallback>
+            <AvatarFallback className="bg-primary text-primary-foreground"><MessageSquare className="h-4 w-4 fill-white text-white" /></AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
             <span className="text-sm font-semibold">Maya</span>
@@ -123,7 +123,7 @@ export default function MayaWidget() {
           <CardHeader className="bg-primary text-primary-foreground p-4 flex-row items-center gap-3 space-y-0">
             <Avatar className="h-10 w-10 border-2 border-white/20">
               <AvatarImage src="/maya-avatar.png" alt="Maya" />
-              <AvatarFallback className="bg-white/20 text-white"><Bot className="h-6 w-6" /></AvatarFallback>
+              <AvatarFallback className="bg-white/20 text-white"><MessageSquare className="h-6 w-6 fill-white text-white" /></AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <CardTitle className="text-base font-bold">Maya</CardTitle>
@@ -166,7 +166,7 @@ export default function MayaWidget() {
                       ) : (
                         <>
                           <AvatarImage src="/maya-avatar.png" alt="Maya" />
-                          <AvatarFallback className="bg-primary text-primary-foreground"><Bot className="h-4 w-4" /></AvatarFallback>
+                          <AvatarFallback className="bg-primary text-primary-foreground"><MessageSquare className="h-4 w-4 fill-white text-white" /></AvatarFallback>
                         </>
                       )}
                     </Avatar>
@@ -185,7 +185,7 @@ export default function MayaWidget() {
                   <div className="flex gap-2 max-w-[85%] mr-auto">
                     <Avatar className="h-8 w-8 mt-1 shrink-0">
                       <AvatarImage src="/maya-avatar.png" alt="Maya" />
-                      <AvatarFallback className="bg-primary text-primary-foreground"><Bot className="h-4 w-4" /></AvatarFallback>
+                      <AvatarFallback className="bg-primary text-primary-foreground"><MessageSquare className="h-4 w-4 fill-white text-white" /></AvatarFallback>
                     </Avatar>
                     <div className="p-3 rounded-2xl bg-white border rounded-tl-none shadow-sm flex items-center gap-1">
                       <span className="h-1.5 w-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:-0.3s]" />
@@ -240,7 +240,7 @@ export default function MayaWidget() {
           open ? "rotate-90 scale-90" : "hover:scale-110 active:scale-95"
         )}
       >
-        {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+        {open ? <X className="h-6 w-6" /> : <MessageSquare className="h-6 w-6 fill-white text-white" />}
       </Button>
     </div>
   );
