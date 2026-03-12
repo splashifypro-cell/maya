@@ -6,7 +6,32 @@
 
 A premium, full-stack AI chat assistant integrated into the **Splashify Pro** platform, powered by [**Sarvam AI**](https://www.sarvam.ai/).
 
-## 🚀 Overview
+## � Embed Maya on Your Website
+
+You can now embed Maya on any external website using a simple script tag, just like Zoho or Intercom.
+
+### **Quick Setup**
+Add the following code before the closing `</body>` tag of your website:
+
+```html
+<!-- Maya AI Chat Widget -->
+<script src="https://agentmaya.vercel.app/widget.js" defer></script>
+```
+
+### **Manual Initialization (Optional)**
+If you need to control when the widget loads, you can use the manual loader:
+```html
+<script>
+  window.mayaConfig = {
+    // Future configuration options like theme or initial message
+  };
+</script>
+<script src="https://agentmaya.vercel.app/widget.js" defer></script>
+```
+
+---
+
+## �🚀 Overview
 
 Maya is an AI-powered assistant designed to provide seamless customer interactions. It leverages Sarvam's state-of-the-art conversational AI to handle inquiries about pricing, onboarding, and support within a modern chat interface.
 
