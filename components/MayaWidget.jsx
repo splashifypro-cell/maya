@@ -215,11 +215,11 @@ export default function MayaWidget() {
       <Button 
         onClick={open ? () => setOpen(false) : openWidget} 
         className={cn(
-          "h-14 w-14 rounded-full shadow-xl transition-all duration-300 transform",
+          "h-14 w-14 rounded-full shadow-xl transition-all duration-300 transform p-0",
           open ? "rotate-90 scale-90" : "hover:scale-110 active:scale-95"
         )}
       >
-        {open ? <X className="h-7 w-7" /> : <MessageSquare className="h-7 w-7 fill-white text-white" />}
+        {open ? <X className="h-9 w-9" /> : <MessageSquare className="h-9 w-9 fill-white text-white" />}
       </Button>
     </div>
   );
