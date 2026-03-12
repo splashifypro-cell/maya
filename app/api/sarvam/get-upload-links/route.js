@@ -15,14 +15,13 @@ export async function POST(request) {
       return NextResponse.json({ error: 'job_id and filename are required' }, { status: 400 });
     }
 
-    const sarvamRes = await fetch('https://api.sarvam.ai/doc-digitization/job/v1/upload', {
+    const sarvamRes = await fetch(`https://api.sarvam.ai/doc-digitization/job/v1/${job_id}/upload`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'api-subscription-key': process.env.SARVAM_API_KEY || '',
       },
       body: JSON.stringify({
-        job_id,
         files: [filename]
       })
     });
