@@ -13,9 +13,9 @@ export const authOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // This is a simple mock. In production, check against hashed passwords in DB
-        if (credentials.email === "admin@splashify.pro" && credentials.password === "admin123") {
-          return { id: "1", name: "Admin", email: "admin@splashify.pro", role: "admin" };
+        // Updated credentials as per user request
+        if (credentials.email === "sayan@splashifypro.in" && credentials.password === "Admin@0908") {
+          return { id: "1", name: "Sayan", email: "sayan@splashifypro.in", role: "admin" };
         }
         return null;
       }
