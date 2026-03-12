@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Send, X, Minus, MessageCircle, Bot, User } from 'lucide-react';
+import { ArrowUp, X, Minus, MessageCircle, Bot, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -217,9 +217,12 @@ export default function MayaWidget() {
                 onClick={sendMessage} 
                 disabled={loading || !input.trim()} 
                 size="icon" 
-                className="h-9 w-9 shrink-0 rounded-full shadow-md"
+                className={cn(
+                  "h-8 w-8 shrink-0 rounded-lg transition-all duration-200",
+                  input.trim() ? "bg-primary text-primary-foreground" : "bg-slate-200 text-slate-400"
+                )}
               >
-                <Send className="h-4 w-4" />
+                <ArrowUp className="h-4 w-4" />
               </Button>
             </div>
             <div className="flex items-center justify-center gap-1 px-1">
