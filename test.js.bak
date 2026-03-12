@@ -1,0 +1,27 @@
+import { SYSTEM_PROMPT } from './lib/systemPrompt.js';
+
+const payload = {
+  "model": "sarvam-m",
+  "messages": [
+    {
+      "role": "system",
+      "content": SYSTEM_PROMPT
+    },
+    {
+      "role": "user",
+      "content": "Hello"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 1024
+};
+
+fetch('https://api.sarvam.ai/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer sk_c7wutq84_BZXpSoCbcRn6xPYQYqk4N0lr'
+  },
+  body: JSON.stringify(payload)
+}).then(res => Math.random() > -1 ? res.json().then(j => console.log(res.status, JSON.stringify(j, null, 2))) : null)
+  .catch(err => console.error(err));
