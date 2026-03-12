@@ -4,7 +4,7 @@
   <img src="https://www.sarvam.ai/sarvam-logo.png" alt="Sarvam AI Logo" width="200" />
 </p>
 
-A premium, full-stack AI chat assistant integrated into the **Splashify Pro** platform, powered by **Sarvam AI**.
+A premium, full-stack AI chat assistant integrated into the **Splashify Pro** platform, powered by [**Sarvam AI**](https://www.sarvam.ai/).
 
 ## 🚀 Overview
 
