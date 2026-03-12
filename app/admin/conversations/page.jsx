@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   Search, 
   MessageSquare, 
@@ -19,10 +19,19 @@ export default function AdminConversations() {
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [reply, setReply] = useState('');
+  const [sending, setSending] = useState(false);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     fetchConversations();
+    // Poll for new messages every 5 seconds
+    const interval = setInterval(fetchConversations, 5000);
+    return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [selectedId, conversations]);
 
   const fetchConversations = async () => {
     try {
@@ -36,6 +45,39 @@ export default function AdminConversations() {
       console.error('Failed to fetch conversations');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSend = async () => {
+    if (!reply.trim() || !selectedId || sending) return;
+
+    setSending(true);
+    try {
+      const res = await fetch('/api/admin/conversations/reply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId: selectedId, message: reply.trim() }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        console.error('Send failed:', err);
+        return;
+      }
+
+      setReply('');
+      await fetchConversations();
+    } catch (err) {
+      console.error('Failed to send message:', err);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   };
 
@@ -176,6 +218,7 @@ export default function AdminConversations() {
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Input Bar */}
@@ -187,16 +230,18 @@ export default function AdminConversations() {
                   rows={1}
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
+                  onKeyDown={handleKeyDown}
                 />
                 <div className="flex items-center gap-2 pb-1 flex-shrink-0">
                   <button className="p-2 text-slate-400 hover:text-primary transition-colors">
                     <Palette className="h-5 w-5" />
                   </button>
                   <button 
-                    disabled={!reply.trim()}
+                    onClick={handleSend}
+                    disabled={!reply.trim() || sending}
                     className="px-6 py-2 bg-primary text-white text-[10px] font-bold uppercase tracking-widest rounded-lg hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2 group disabled:opacity-50 disabled:shadow-none"
                   >
-                    Send <ArrowUp className="h-4 w-4 transition-transform group-hover:-translate-y-1" />
+                    {sending ? 'Sending...' : <> Send <ArrowUp className="h-4 w-4 transition-transform group-hover:-translate-y-1" /> </>}
                   </button>
                 </div>
               </div>
