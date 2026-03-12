@@ -1,7 +1,7 @@
 # Maya Document Reader
 
 <p align="center">
-  <img src="https://www.sarvam.ai/sarvam-logo.png" alt="Sarvam AI Logo" width="200" />
+  <img src="https://assets.sarvam.ai/assets/svgs/sarvam-wordmark-black.svg" alt="Sarvam AI Logo" width="200" />
 </p>
 
 A premium, full-stack AI chat assistant integrated into the **Splashify Pro** platform, powered by [**Sarvam AI**](https://www.sarvam.ai/).
