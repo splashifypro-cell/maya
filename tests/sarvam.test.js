@@ -1,5 +1,5 @@
 
-const { isRateLimited } = require('../lib/rate-limiter');
+import { isRateLimited } from '../lib/rate-limiter';
 
 describe('Rate Limiter', () => {
   const ip = '127.0.0.1';

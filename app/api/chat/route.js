@@ -118,7 +118,7 @@ export async function POST(request) {
           finalMessage = actionObj.message;
         }
       }
-    } catch (e) {
+    } catch (_e) {
       // Not valid JSON — use the raw reply as-is
     }
 
