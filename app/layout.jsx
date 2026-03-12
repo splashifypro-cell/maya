@@ -1,6 +1,7 @@
 
 import './globals.css';
 import { Inter } from 'next/font/google';
+import { Providers } from '@/components/Providers';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -12,7 +13,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
-      <body className="font-sans" suppressHydrationWarning>{children}</body>
+      <body className="font-sans" suppressHydrationWarning>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
