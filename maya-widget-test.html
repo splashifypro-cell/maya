@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maya Widget Test</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131c;
+      --border: #1e1e2e;
+      --accent: #7c6aff;
+      --accent2: #ff6a9b;
+      --text: #e8e8f0;
+      --muted: #5a5a78;
+    }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124,106,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,106,255,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    /* Glow blob */
+    body::after {
+      content: '';
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,106,255,0.12) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: pulse 5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.7; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 680px;
+      padding: 2rem;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(124,106,255,0.1);
+      border: 1px solid rgba(124,106,255,0.25);
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 2rem;
+    }
+
+    .badge::before {
+      content: '';
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.2rem;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 3rem;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Status card */
+    .status-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+
+    .status-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .status-row:last-child { border-bottom: none; }
+
+    .status-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .status-value {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .pill {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-weight: 500;
+    }
+
+    .pill.loading {
+      background: rgba(255,200,80,0.12);
+      color: #ffc840;
+      border: 1px solid rgba(255,200,80,0.25);
+    }
+
+    .pill.success {
+      background: rgba(80,220,140,0.12);
+      color: #50dc8c;
+      border: 1px solid rgba(80,220,140,0.25);
+    }
+
+    .pill.error {
+      background: rgba(255,90,90,0.12);
+      color: #ff5a5a;
+      border: 1px solid rgba(255,90,90,0.25);
+    }
+
+    /* Instruction */
+    .hint {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2rem;
+      animation: fadeUp 0.8s 0.4s ease both;
+      opacity: 0;
+      animation-fill-mode: both;
+    }
+
+    .hint span {
+      color: var(--accent2);
+    }
+
+    /* Corner decoration */
+    .corner {
+      position: fixed;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--border);
+      letter-spacing: 0.1em;
+    }
+    .corner.tl { top: 24px; left: 24px; }
+    .corner.tr { top: 24px; right: 24px; }
+    .corner.bl { bottom: 24px; left: 24px; }
+    .corner.br { bottom: 24px; right: 24px; }
+  </style>
+</head>
+<body>
+
+  <span class="corner tl">MAYA / TEST</span>
+  <span class="corner tr">v1.0</span>
+  <span class="corner bl">agentmaya.vercel.app</span>
+  <span class="corner br">widget.js</span>
+
+  <div class="container">
+    <div class="badge">Widget Test Environment</div>
+
+    <h1>Testing <span>Maya AI</span><br/>Chat Widget</h1>
+
+    <p class="subtitle">
+      This page loads the Maya widget script and checks whether it
+      initializes correctly. Look for the chat button in the corner.
+    </p>
+
+    <div class="status-card">
+      <div class="status-row">
+        <span class="status-label">SCRIPT SOURCE</span>
+        <span class="status-value" style="font-family:'DM Mono',monospace;font-size:0.78rem;color:#a0a0c0;">
+          agentmaya.vercel.app/widget.js
+        </span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">SCRIPT STATUS</span>
+        <span id="script-status" class="pill loading">⏳ Loading…</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">WIDGET DETECTED</span>
+        <span id="widget-status" class="pill loading">⏳ Checking…</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">PAGE LOAD</span>
+        <span id="load-time" class="pill loading">⏳ …</span>
+      </div>
+    </div>
+
+    <p class="hint">
+      → look for the <span>chat bubble</span> in the bottom corner of the page
+    </p>
+  </div>
+
+  <!-- Maya AI Chat Widget -->
+  <script src="https://agentmaya.vercel.app/widget.js" defer
+    onload="onWidgetLoad()" onerror="onWidgetError()"></script>
+
+  <script>
+    const t0 = performance.now();
+
+    function onWidgetLoad() {
+      document.getElementById('script-status').textContent = '✓ Loaded';
+      document.getElementById('script-status').className = 'pill success';
+
+      // Check if widget injected something into the DOM after a short delay
+      setTimeout(() => {
+        const bodyHTML = document.body.innerHTML;
+        const hasWidget =
+          document.querySelector('iframe[src*="maya"]') ||
+          document.querySelector('[id*="maya"]') ||
+          document.querySelector('[class*="maya"]') ||
+          document.querySelector('[id*="chat"]') ||
+          document.querySelector('[class*="chat-widget"]') ||
+          document.querySelector('[class*="widget"]') ||
+          document.querySelectorAll('iframe').length > 0;
+
+        const ws = document.getElementById('widget-status');
+        if (hasWidget) {
+          ws.textContent = '✓ Detected';
+          ws.className = 'pill success';
+        } else {
+          ws.textContent = '⚠ Not Detected';
+          ws.className = 'pill loading';
+        }
+      }, 1500);
+
+      const elapsed = (performance.now() - t0).toFixed(0);
+      const lt = document.getElementById('load-time');
+      lt.textContent = `✓ ${elapsed}ms`;
+      lt.className = 'pill success';
+    }
+
+    function onWidgetError() {
+      document.getElementById('script-status').textContent = '✗ Failed to Load';
+      document.getElementById('script-status').className = 'pill error';
+      document.getElementById('widget-status').textContent = '✗ N/A';
+      document.getElementById('widget-status').className = 'pill error';
+      document.getElementById('load-time').textContent = '✗ N/A';
+      document.getElementById('load-time').className = 'pill error';
+    }
+  </script>
+</body>
+</html>

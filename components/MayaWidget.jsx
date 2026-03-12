@@ -52,6 +52,11 @@ export default function MayaWidget() {
     }
   }, [messages, loading]);
 
+  useEffect(() => {
+    // Notify parent about widget state for resizing
+    window.parent.postMessage({ type: 'MAYA_WIDGET_STATE', open }, '*');
+  }, [open]);
+
   const openWidget = useCallback(() => {
     setOpen(true);
     if (!everOpened) {
