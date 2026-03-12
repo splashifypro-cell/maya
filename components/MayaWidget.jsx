@@ -33,7 +33,6 @@ export default function MayaWidget() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
   
   const scrollAreaRef = useRef(null);
   const inputRef = useRef(null);
@@ -55,7 +54,6 @@ export default function MayaWidget() {
 
   const openWidget = useCallback(() => {
     setOpen(true);
-    setShowTooltip(false);
     if (!everOpened) {
       setEverOpened(true);
       setMessages([{
@@ -98,24 +96,6 @@ export default function MayaWidget() {
 
   return (
     <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end gap-3 font-sans antialiased">
-      {/* Tooltip */}
-      {!open && (showTooltip || everOpened) && (
-        <div 
-          onClick={openWidget} 
-          className="flex items-center gap-3 bg-background border rounded-xl p-3 cursor-pointer shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-300 min-w-[240px]"
-        >
-          <Avatar className="h-8 w-8 border-2 border-primary/20">
-            <AvatarImage src="/maya-avatar.png" alt="Maya" />
-            <AvatarFallback className="bg-primary text-primary-foreground"><Bot className="h-4 w-4" /></AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold">Maya</span>
-            <span className="text-[10px] text-primary font-medium uppercase tracking-wider">Splashify Pro Support</span>
-          </div>
-          <X className="h-3 w-3 ml-auto text-muted-foreground" />
-        </div>
-      )}
-
       {/* Chat Panel */}
       {open && (
         <Card className="w-[380px] h-[600px] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 fade-in duration-200 origin-bottom-right">
