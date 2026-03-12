@@ -219,7 +219,7 @@ export default function MayaWidget() {
           open ? "rotate-90 scale-90" : "hover:scale-110 active:scale-95"
         )}
       >
-        {open ? <X className="h-6 w-6" /> : <MessageSquare className="h-6 w-6 fill-white text-white" />}
+        {open ? <X className="h-7 w-7" /> : <MessageSquare className="h-7 w-7 fill-white text-white" />}
       </Button>
     </div>
   );
